@@ -60,7 +60,7 @@ export async function refreshQwenPortalCredentials(
   return {
     ...credentials,
     access: payload.access_token,
-    refresh: payload.refresh_token ?? credentials.refresh,
+    refresh: payload.refresh_token || credentials.refresh,
     expires: Date.now() + payload.expires_in * 1000,
   };
 }

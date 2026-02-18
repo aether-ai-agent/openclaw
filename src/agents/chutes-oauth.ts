@@ -230,7 +230,7 @@ export async function refreshChutesTokens(params: {
   return {
     ...params.credential,
     access,
-    refresh: newRefresh ?? refreshToken,
+    refresh: newRefresh || refreshToken,
     expires: coerceExpiresAt(expiresIn, now),
     clientId,
   } as unknown as ChutesStoredOAuth;
