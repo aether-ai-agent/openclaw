@@ -616,6 +616,8 @@ export function collectSandboxDangerousConfigFindings(cfg: OpenClawConfig): Secu
       if (typeof bind !== "string") {
         continue;
       }
+      // getBlockedBindReason normalizes via posix.normalize() before blocklist comparison,
+      // so path traversal like /home/user/../../etc/passwd:/mnt is caught correctly.
       const blocked = getBlockedBindReason(bind);
       if (!blocked) {
         continue;

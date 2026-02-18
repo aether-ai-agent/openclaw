@@ -22,6 +22,8 @@ export const BLOCKED_HOST_PATHS = [
   "/run",
   "/var/run",
   "/private/var/run",
+  // Explicit socket paths: on modern Linux /var/run is a symlink to /run,
+  // so /run/docker.sock is the real path and must be blocked independently.
   "/var/run/docker.sock",
   "/private/var/run/docker.sock",
   "/run/docker.sock",
