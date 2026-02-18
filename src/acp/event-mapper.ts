@@ -17,8 +17,9 @@ const RESOURCE_TITLE_MAX_LENGTH = 200;
  * - Truncates the title to RESOURCE_TITLE_MAX_LENGTH characters
  */
 export function sanitizeResourceTitle(title: string): string {
-  // Strip control characters that allow injecting new prompt lines
-  const stripped = title.replace(/[\r\n]/g, " ");
+  // Strip control characters that allow injecting new prompt lines,
+  // including vertical tab, form feed, null byte, and Unicode line/paragraph separators
+  const stripped = title.replace(/[\r\n\v\f\0\u2028\u2029]/g, " ");
   // Truncate to prevent excessively long injections
   return stripped.length > RESOURCE_TITLE_MAX_LENGTH
     ? stripped.slice(0, RESOURCE_TITLE_MAX_LENGTH)
@@ -42,7 +43,7 @@ export function extractTextFromPrompt(prompt: ContentBlock[]): string {
     if (block.type === "resource_link") {
       const rawTitle = block.title ? sanitizeResourceTitle(block.title) : "";
       const title = rawTitle ? ` (${rawTitle})` : "";
-      const uri = block.uri ?? "";
+      const uri = block.uri ? sanitizeResourceTitle(block.uri) : "";
       const line = uri ? `[Resource link${title}] ${uri}` : `[Resource link${title}]`;
       parts.push(line);
     }
