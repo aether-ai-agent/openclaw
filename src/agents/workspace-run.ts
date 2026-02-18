@@ -9,7 +9,7 @@ import {
 } from "../routing/session-key.js";
 import { resolveUserPath } from "../utils.js";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "./agent-scope.js";
-import { sanitizeForPromptLiteral } from "./sanitize-for-prompt.js";
+import { sanitizeForPrompt } from "./sanitize-for-prompt.js";
 
 export type WorkspaceFallbackReason = "missing" | "blank" | "invalid_type";
 type AgentIdSource = "explicit" | "session_key" | "default";
@@ -86,7 +86,7 @@ export function resolveRunWorkspaceDir(params: {
   if (typeof requested === "string") {
     const trimmed = requested.trim();
     if (trimmed) {
-      const sanitized = sanitizeForPromptLiteral(trimmed);
+      const sanitized = sanitizeForPrompt(trimmed);
       if (sanitized !== trimmed) {
         logWarn("Control/format characters stripped from workspaceDir (OC-19 hardening).");
       }
@@ -102,7 +102,7 @@ export function resolveRunWorkspaceDir(params: {
   const fallbackReason: WorkspaceFallbackReason =
     requested == null ? "missing" : typeof requested === "string" ? "blank" : "invalid_type";
   const fallbackWorkspace = resolveAgentWorkspaceDir(params.config ?? {}, agentId);
-  const sanitizedFallback = sanitizeForPromptLiteral(fallbackWorkspace);
+  const sanitizedFallback = sanitizeForPrompt(fallbackWorkspace);
   if (sanitizedFallback !== fallbackWorkspace) {
     logWarn("Control/format characters stripped from fallback workspaceDir (OC-19 hardening).");
   }

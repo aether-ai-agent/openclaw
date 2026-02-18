@@ -4,7 +4,7 @@ import type { MemoryCitationsMode } from "../config/types.memory.js";
 import { listDeliverableMessageChannels } from "../utils/message-channel.js";
 import type { ResolvedTimeFormat } from "./date-time.js";
 import type { EmbeddedContextFile } from "./pi-embedded-helpers.js";
-import { sanitizeForPromptLiteral } from "./sanitize-for-prompt.js";
+import { sanitizeForPrompt } from "./sanitize-for-prompt.js";
 
 /**
  * Controls which hardcoded sections are included in the system prompt.
@@ -357,9 +357,9 @@ export function buildAgentSystemPrompt(params: {
   const promptMode = params.promptMode ?? "full";
   const isMinimal = promptMode === "minimal" || promptMode === "none";
   const sandboxContainerWorkspace = params.sandboxInfo?.containerWorkspaceDir?.trim();
-  const sanitizedWorkspaceDir = sanitizeForPromptLiteral(params.workspaceDir);
+  const sanitizedWorkspaceDir = sanitizeForPrompt(params.workspaceDir);
   const sanitizedSandboxContainerWorkspace = sandboxContainerWorkspace
-    ? sanitizeForPromptLiteral(sandboxContainerWorkspace)
+    ? sanitizeForPrompt(sandboxContainerWorkspace)
     : "";
   const displayWorkspaceDir =
     params.sandboxInfo?.enabled && sanitizedSandboxContainerWorkspace
@@ -486,21 +486,21 @@ export function buildAgentSystemPrompt(params: {
           "Some tools may be unavailable due to sandbox policy.",
           "Sub-agents stay sandboxed (no elevated/host access). Need outside-sandbox read/write? Don't spawn; ask first.",
           params.sandboxInfo.containerWorkspaceDir
-            ? `Sandbox container workdir: ${sanitizeForPromptLiteral(params.sandboxInfo.containerWorkspaceDir)}`
+            ? `Sandbox container workdir: ${sanitizeForPrompt(params.sandboxInfo.containerWorkspaceDir)}`
             : "",
           params.sandboxInfo.workspaceDir
-            ? `Sandbox host mount source (file tools bridge only; not valid inside sandbox exec): ${sanitizeForPromptLiteral(params.sandboxInfo.workspaceDir)}`
+            ? `Sandbox host mount source (file tools bridge only; not valid inside sandbox exec): ${sanitizeForPrompt(params.sandboxInfo.workspaceDir)}`
             : "",
           params.sandboxInfo.workspaceAccess
             ? `Agent workspace access: ${params.sandboxInfo.workspaceAccess}${
                 params.sandboxInfo.agentWorkspaceMount
-                  ? ` (mounted at ${sanitizeForPromptLiteral(params.sandboxInfo.agentWorkspaceMount)})`
+                  ? ` (mounted at ${sanitizeForPrompt(params.sandboxInfo.agentWorkspaceMount)})`
                   : ""
               }`
             : "",
           params.sandboxInfo.browserBridgeUrl ? "Sandbox browser: enabled." : "",
           params.sandboxInfo.browserNoVncUrl
-            ? `Sandbox browser observer (noVNC): ${sanitizeForPromptLiteral(params.sandboxInfo.browserNoVncUrl)}`
+            ? `Sandbox browser observer (noVNC): ${sanitizeForPrompt(params.sandboxInfo.browserNoVncUrl)}`
             : "",
           params.sandboxInfo.hostBrowserAllowed === true
             ? "Host browser control: allowed."
